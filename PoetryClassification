@@ -1,0 +1,1544 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "toc": true
+   },
+   "source": [
+    "<h1>Table of Contents<span class=\"tocSkip\"></span></h1>\n",
+    "<div class=\"toc\"><ul class=\"toc-item\"><li><span><a href=\"#Introduction\" data-toc-modified-id=\"Introduction-1\"><span class=\"toc-item-num\">1&nbsp;&nbsp;</span>Introduction</a></span></li><li><span><a href=\"#Exploring-Data\" data-toc-modified-id=\"Exploring-Data-2\"><span class=\"toc-item-num\">2&nbsp;&nbsp;</span>Exploring Data</a></span><ul class=\"toc-item\"><li><span><a href=\"#Meet-and-Greet-Data\" data-toc-modified-id=\"Meet-and-Greet-Data-2.1\"><span class=\"toc-item-num\">2.1&nbsp;&nbsp;</span>Meet and Greet Data</a></span></li><li><span><a href=\"#Split-Train-set-and-Test-set\" data-toc-modified-id=\"Split-Train-set-and-Test-set-2.2\"><span class=\"toc-item-num\">2.2&nbsp;&nbsp;</span>Split Train set and Test set</a></span></li><li><span><a href=\"#Exploring-Labels\" data-toc-modified-id=\"Exploring-Labels-2.3\"><span class=\"toc-item-num\">2.3&nbsp;&nbsp;</span>Exploring Labels</a></span></li></ul></li><li><span><a href=\"#Feature-Engineering\" data-toc-modified-id=\"Feature-Engineering-3\"><span class=\"toc-item-num\">3&nbsp;&nbsp;</span>Feature Engineering</a></span><ul class=\"toc-item\"><li><span><a href=\"#Normalize\" data-toc-modified-id=\"Normalize-3.1\"><span class=\"toc-item-num\">3.1&nbsp;&nbsp;</span>Normalize</a></span></li><li><span><a href=\"#Tokeninzing\" data-toc-modified-id=\"Tokeninzing-3.2\"><span class=\"toc-item-num\">3.2&nbsp;&nbsp;</span>Tokeninzing</a></span></li><li><span><a href=\"#Add-Words-Position\" data-toc-modified-id=\"Add-Words-Position-3.3\"><span class=\"toc-item-num\">3.3&nbsp;&nbsp;</span>Add Words Position</a></span></li><li><span><a href=\"#Delete-Small-Tokens\" data-toc-modified-id=\"Delete-Small-Tokens-3.4\"><span class=\"toc-item-num\">3.4&nbsp;&nbsp;</span>Delete Small Tokens</a></span></li><li><span><a href=\"#Length-of-Hemistichs\" data-toc-modified-id=\"Length-of-Hemistichs-3.5\"><span class=\"toc-item-num\">3.5&nbsp;&nbsp;</span>Length of Hemistichs</a></span></li><li><span><a href=\"#Lemmatizing\" data-toc-modified-id=\"Lemmatizing-3.6\"><span class=\"toc-item-num\">3.6&nbsp;&nbsp;</span>Lemmatizing</a></span></li><li><span><a href=\"#Stemming\" data-toc-modified-id=\"Stemming-3.7\"><span class=\"toc-item-num\">3.7&nbsp;&nbsp;</span>Stemming</a></span></li><li><span><a href=\"#Existance-Matrix\" data-toc-modified-id=\"Existance-Matrix-3.8\"><span class=\"toc-item-num\">3.8&nbsp;&nbsp;</span>Existance Matrix</a></span></li></ul></li><li><span><a href=\"#Creating-Pipeline\" data-toc-modified-id=\"Creating-Pipeline-4\"><span class=\"toc-item-num\">4&nbsp;&nbsp;</span>Creating Pipeline</a></span></li><li><span><a href=\"#Train-Naive-Bayes-Model-And-How-It-Works\" data-toc-modified-id=\"Train-Naive-Bayes-Model-And-How-It-Works-5\"><span class=\"toc-item-num\">5&nbsp;&nbsp;</span>Train Naive Bayes Model And How It Works</a></span><ul class=\"toc-item\"><li><span><a href=\"#Scores-for-Hafez\" data-toc-modified-id=\"Scores-for-Hafez-5.1\"><span class=\"toc-item-num\">5.1&nbsp;&nbsp;</span>Scores for <code>Hafez</code></a></span></li><li><span><a href=\"#Scores-for-Saadi\" data-toc-modified-id=\"Scores-for-Saadi-5.2\"><span class=\"toc-item-num\">5.2&nbsp;&nbsp;</span>Scores for <code>Saadi</code></a></span></li><li><span><a href=\"#Accuracy\" data-toc-modified-id=\"Accuracy-5.3\"><span class=\"toc-item-num\">5.3&nbsp;&nbsp;</span>Accuracy</a></span></li></ul></li><li><span><a href=\"#Evalute-Model\" data-toc-modified-id=\"Evalute-Model-6\"><span class=\"toc-item-num\">6&nbsp;&nbsp;</span>Evalute Model</a></span></li><li><span><a href=\"#Questions\" data-toc-modified-id=\"Questions-7\"><span class=\"toc-item-num\">7&nbsp;&nbsp;</span>Questions</a></span></li></ul></div>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Computer Assignment 3\n",
+    "**Farzad Habibi - 810195383**\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Introduction\n",
+    "In this computer assignment we are going to classify peoms by two peots of iran (Hafez and Saadi). We use Navie Bayes model to classify them and also use two methodolgy to make features from peoms.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Exploring Data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "###  Meet and Greet Data\n",
+    "At first we read data from our csv files. Then try see their data."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import os\n",
+    "DATA_FOLDER = './Data'\n",
+    "TRAIN_SET = 'train_test.csv'\n",
+    "EVALUATE = 'evaluate.csv'\n",
+    "train_set = pd.read_csv(os.path.join(DATA_FOLDER, TRAIN_SET))\n",
+    "evaluate_set = pd.read_csv(os.path.join(DATA_FOLDER, EVALUATE), index_col='id')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>text</th>\n",
+       "      <th>label</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>چون می‌رود این کشتی سرگشته که آخر</td>\n",
+       "      <td>hafez</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>که همین بود حد امکانش</td>\n",
+       "      <td>saadi</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>ارادتی بنما تا سعادتی ببری</td>\n",
+       "      <td>hafez</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>خدا را زین معما پرده بردار</td>\n",
+       "      <td>hafez</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>گویی که در برابر چشمم مصوری</td>\n",
+       "      <td>saadi</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                text  label\n",
+       "0  چون می‌رود این کشتی سرگشته که آخر  hafez\n",
+       "1              که همین بود حد امکانش  saadi\n",
+       "2         ارادتی بنما تا سعادتی ببری  hafez\n",
+       "3         خدا را زین معما پرده بردار  hafez\n",
+       "4        گویی که در برابر چشمم مصوری  saadi"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "train_set.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>text</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>id</th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>ور بی تو بامداد کنم روز محشر است</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>ساقی بیار جامی کز زهد توبه کردم</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>مرا هرآینه خاموش بودن اولی‌تر</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>تو ندانی که چرا در تو کسی خیره بماند</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>کاینان به دل ربودن مردم معینند</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                    text\n",
+       "id                                      \n",
+       "1       ور بی تو بامداد کنم روز محشر است\n",
+       "2        ساقی بیار جامی کز زهد توبه کردم\n",
+       "3          مرا هرآینه خاموش بودن اولی‌تر\n",
+       "4   تو ندانی که چرا در تو کسی خیره بماند\n",
+       "5         کاینان به دل ربودن مردم معینند"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate_set.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<class 'pandas.core.frame.DataFrame'>\n",
+      "RangeIndex: 20889 entries, 0 to 20888\n",
+      "Data columns (total 2 columns):\n",
+      "text     20889 non-null object\n",
+      "label    20889 non-null object\n",
+      "dtypes: object(2)\n",
+      "memory usage: 326.5+ KB\n"
+     ]
+    }
+   ],
+   "source": [
+    "train_set.info()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As you see all columns are not null. So we don't need to impute this columns and we can use their data without any impution."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Split Train set and Test set\n",
+    "For this goal first of all we shuffle our data and split data into two part of train and test with split factor of 0.2."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.model_selection import train_test_split\n",
+    "X_train, X_test, y_train, y_test = train_test_split(train_set[['text']], train_set['label'], test_size=0.2, random_state=42)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Exploring Labels"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Lets see how much of our train data is hafez poetry and how much is saadi poetry. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "sns.set()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.axes._subplots.AxesSubplot at 0x123174e10>"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "sns.countplot(x=y_train)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "There is more peotries by saadi in our train_data."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Feature Engineering"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Normalize \n",
+    "At first we nomalize our hemistichs with `hazm` library. this library change one words with extra spaces into one words with half-spaces in persian."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'اصلاح نویسه\\u200cها و استفاده از نیم\\u200cفاصله پردازش را آسان می\\u200cکند'"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from hazm import Normalizer\n",
+    "normalizer = Normalizer()\n",
+    "normalizer.normalize('اصلاح نويسه ها و استفاده از نیم‌فاصله پردازش را آسان مي كند')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.base import TransformerMixin, BaseEstimator\n",
+    "class PeotNormalizer(BaseEstimator, TransformerMixin):\n",
+    "    def __init__(self):\n",
+    "        self.normalizer = Normalizer()\n",
+    "    def fit(self, X, y=None):\n",
+    "        return self\n",
+    "    def transform(self, X, y=None):\n",
+    "        X_copy = X.copy()\n",
+    "        X_copy['text'] = X_copy['text'].apply(self.normalizer.normalize)\n",
+    "        return X_copy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X_normalized = PeotNormalizer().fit_transform(X_train)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Tokeninzing"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We tokenize our hemistichs into words using word tokenizer in hazm library. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from hazm import word_tokenize\n",
+    "class PeotTokenizer(BaseEstimator, TransformerMixin):\n",
+    "    def fit(self, X, y=None):\n",
+    "        return self\n",
+    "    def transform(self, X, y=None):\n",
+    "        X_copy = X.copy()\n",
+    "        X_copy['text'] = X_copy['text'].apply(word_tokenize)\n",
+    "        return X_copy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>text</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>19075</th>\n",
+       "      <td>[از, چشم, شوخش, ای, دل, ایمان, خود, نگه, دار]</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12549</th>\n",
+       "      <td>[ز, اخترم, نظری, سعد, در, ره, است, که, دوش]</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>401</th>\n",
+       "      <td>[هر, کس, حکایتی, به, تصور, چرا, کنند]</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8542</th>\n",
+       "      <td>[مگر, که, لاله, بدانست, بی‌وفایی, دهر]</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19664</th>\n",
+       "      <td>[گوهر, جام, جم, از, کان, جهانی, دگر, است]</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                                text\n",
+       "19075  [از, چشم, شوخش, ای, دل, ایمان, خود, نگه, دار]\n",
+       "12549    [ز, اخترم, نظری, سعد, در, ره, است, که, دوش]\n",
+       "401            [هر, کس, حکایتی, به, تصور, چرا, کنند]\n",
+       "8542          [مگر, که, لاله, بدانست, بی‌وفایی, دهر]\n",
+       "19664      [گوهر, جام, جم, از, کان, جهانی, دگر, است]"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "X_tokenized = PeotTokenizer().fit_transform(X_normalized)\n",
+    "X_tokenized.head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Add Words Position"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can also position of words here."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class PoetPosAdder(BaseEstimator, TransformerMixin):\n",
+    "    def fit(self, X, y=None):\n",
+    "        self.max_nums = np.unique(X['text'].apply(len))\n",
+    "        return self\n",
+    "    def transform(self, X, y=None):\n",
+    "        X_copy = X.copy()\n",
+    "        for i in self.max_nums:\n",
+    "            X_copy[str(i)] = X_copy.apply(lambda row : row['text'][i-1] if len(row['text']) >= i else 0 , axis=1)\n",
+    "        return X_copy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>text</th>\n",
+       "      <th>1</th>\n",
+       "      <th>2</th>\n",
+       "      <th>3</th>\n",
+       "      <th>4</th>\n",
+       "      <th>5</th>\n",
+       "      <th>6</th>\n",
+       "      <th>7</th>\n",
+       "      <th>8</th>\n",
+       "      <th>9</th>\n",
+       "      <th>10</th>\n",
+       "      <th>11</th>\n",
+       "      <th>12</th>\n",
+       "      <th>13</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>19075</th>\n",
+       "      <td>[از, چشم, شوخش, ای, دل, ایمان, خود, نگه, دار]</td>\n",
+       "      <td>از</td>\n",
+       "      <td>چشم</td>\n",
+       "      <td>شوخش</td>\n",
+       "      <td>ای</td>\n",
+       "      <td>دل</td>\n",
+       "      <td>ایمان</td>\n",
+       "      <td>خود</td>\n",
+       "      <td>نگه</td>\n",
+       "      <td>دار</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12549</th>\n",
+       "      <td>[ز, اخترم, نظری, سعد, در, ره, است, که, دوش]</td>\n",
+       "      <td>ز</td>\n",
+       "      <td>اخترم</td>\n",
+       "      <td>نظری</td>\n",
+       "      <td>سعد</td>\n",
+       "      <td>در</td>\n",
+       "      <td>ره</td>\n",
+       "      <td>است</td>\n",
+       "      <td>که</td>\n",
+       "      <td>دوش</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>401</th>\n",
+       "      <td>[هر, کس, حکایتی, به, تصور, چرا, کنند]</td>\n",
+       "      <td>هر</td>\n",
+       "      <td>کس</td>\n",
+       "      <td>حکایتی</td>\n",
+       "      <td>به</td>\n",
+       "      <td>تصور</td>\n",
+       "      <td>چرا</td>\n",
+       "      <td>کنند</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8542</th>\n",
+       "      <td>[مگر, که, لاله, بدانست, بی‌وفایی, دهر]</td>\n",
+       "      <td>مگر</td>\n",
+       "      <td>که</td>\n",
+       "      <td>لاله</td>\n",
+       "      <td>بدانست</td>\n",
+       "      <td>بی‌وفایی</td>\n",
+       "      <td>دهر</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19664</th>\n",
+       "      <td>[گوهر, جام, جم, از, کان, جهانی, دگر, است]</td>\n",
+       "      <td>گوهر</td>\n",
+       "      <td>جام</td>\n",
+       "      <td>جم</td>\n",
+       "      <td>از</td>\n",
+       "      <td>کان</td>\n",
+       "      <td>جهانی</td>\n",
+       "      <td>دگر</td>\n",
+       "      <td>است</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                                text     1      2       3  \\\n",
+       "19075  [از, چشم, شوخش, ای, دل, ایمان, خود, نگه, دار]    از    چشم    شوخش   \n",
+       "12549    [ز, اخترم, نظری, سعد, در, ره, است, که, دوش]     ز  اخترم    نظری   \n",
+       "401            [هر, کس, حکایتی, به, تصور, چرا, کنند]    هر     کس  حکایتی   \n",
+       "8542          [مگر, که, لاله, بدانست, بی‌وفایی, دهر]   مگر     که    لاله   \n",
+       "19664      [گوهر, جام, جم, از, کان, جهانی, دگر, است]  گوهر    جام      جم   \n",
+       "\n",
+       "            4         5      6     7    8    9 10 11 12 13  \n",
+       "19075      ای        دل  ایمان   خود  نگه  دار  0  0  0  0  \n",
+       "12549     سعد        در     ره   است   که  دوش  0  0  0  0  \n",
+       "401        به      تصور    چرا  کنند    0    0  0  0  0  0  \n",
+       "8542   بدانست  بی‌وفایی    دهر     0    0    0  0  0  0  0  \n",
+       "19664      از       کان  جهانی   دگر  است    0  0  0  0  0  "
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "X_positioned = PoetPosAdder().fit_transform(X_tokenized)\n",
+    "X_positioned.head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Delete Small Tokens\n",
+    "\n",
+    "We can also delete small words. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class PoetSmallTokensDeleter(BaseEstimator, TransformerMixin):\n",
+    "    def __init__(self, max_length=2):\n",
+    "        self.max_length = max_length\n",
+    "    def fit(self, X, y=None):\n",
+    "        return self\n",
+    "    def eliminate(self, tokens):\n",
+    "        new = []\n",
+    "        for t in tokens:\n",
+    "            if len(t) > self.max_length:\n",
+    "                new.append(t)\n",
+    "        return new\n",
+    "    def transform(self, X, y=None):\n",
+    "        X_copy = X.copy()\n",
+    "        X_copy['text'] = X_copy['text'].apply(self.eliminate)\n",
+    "        return X_copy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>text</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>19075</th>\n",
+       "      <td>[چشم, شوخش, ایمان, خود, نگه, دار]</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12549</th>\n",
+       "      <td>[اخترم, نظری, سعد, است, دوش]</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>401</th>\n",
+       "      <td>[حکایتی, تصور, چرا, کنند]</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8542</th>\n",
+       "      <td>[مگر, لاله, بدانست, بی‌وفایی, دهر]</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19664</th>\n",
+       "      <td>[گوهر, جام, کان, جهانی, دگر, است]</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                     text\n",
+       "19075   [چشم, شوخش, ایمان, خود, نگه, دار]\n",
+       "12549        [اخترم, نظری, سعد, است, دوش]\n",
+       "401             [حکایتی, تصور, چرا, کنند]\n",
+       "8542   [مگر, لاله, بدانست, بی‌وفایی, دهر]\n",
+       "19664   [گوهر, جام, کان, جهانی, دگر, است]"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "X_smalled = PoetSmallTokensDeleter().fit_transform(X_tokenized)\n",
+    "X_smalled.head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Length of Hemistichs\n",
+    "\n",
+    "We can add length of hemishtichs which is number of words in a hemishtich."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class PeotLengthAdder(BaseEstimator, TransformerMixin):\n",
+    "    def fit(self, X, y=None):\n",
+    "        return self\n",
+    "    def transform(self, X, y=None):\n",
+    "        X_copy = X.copy()\n",
+    "        X_copy['length'] = X_copy['text'].apply(len)\n",
+    "        return X_copy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {
+    "scrolled": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>text</th>\n",
+       "      <th>length</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>19075</th>\n",
+       "      <td>[از, چشم, شوخش, ای, دل, ایمان, خود, نگه, دار]</td>\n",
+       "      <td>9</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                                text  length\n",
+       "19075  [از, چشم, شوخش, ای, دل, ایمان, خود, نگه, دار]       9"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "X_with_length = PeotLengthAdder().fit_transform(X_tokenized)\n",
+    "X_with_length.head(1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Lemmatizing\n",
+    "With Lemmatizing we change diffrent form of verbs into a unique form to our model doesnt have some ambiguous choosing rules."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from hazm import Lemmatizer\n",
+    "class PeotLemmatizer(BaseEstimator, TransformerMixin):\n",
+    "    def __init__(self):\n",
+    "        self.lemmatizer = Lemmatizer()\n",
+    "    def fit(self, X, y=None):\n",
+    "        return self\n",
+    "    def lemmatizing(self, l):\n",
+    "        return [self.lemmatizer.lemmatize(i) for i in l]\n",
+    "    def transform(self, X, y=None):\n",
+    "        X_copy = X.copy()\n",
+    "        X_copy['text'] = X_copy['text'].apply(self.lemmatizing)\n",
+    "        return X_copy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>text</th>\n",
+       "      <th>length</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>19075</th>\n",
+       "      <td>[از, چشم, شوخ, ای, دل, ایمان, خود, نگه, دار]</td>\n",
+       "      <td>9</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                               text  length\n",
+       "19075  [از, چشم, شوخ, ای, دل, ایمان, خود, نگه, دار]       9"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "X_lemmatized = PeotLemmatizer().fit_transform(X_with_length)\n",
+    "X_lemmatized.head(1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Stemming"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from PersianStemmer import PersianStemmer\n",
+    "class PeotStemmer(BaseEstimator, TransformerMixin):\n",
+    "    def __init__(self):\n",
+    "        self.stemmer = PersianStemmer()\n",
+    "    def fit(self, X, y=None):\n",
+    "        return self\n",
+    "    def stemming(self, l):\n",
+    "        return [self.stemmer.run(i) for i in l]\n",
+    "    def transform(self, X, y=None):\n",
+    "        X_copy = X.copy()\n",
+    "        X_copy['text'] = X_copy['text'].apply(self.stemming)\n",
+    "        return X_copy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>text</th>\n",
+       "      <th>length</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>19075</th>\n",
+       "      <td>[از, چشم, شوخ, ای, دل, ایمان, خود, نگه, دار]</td>\n",
+       "      <td>9</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                               text  length\n",
+       "19075  [از, چشم, شوخ, ای, دل, ایمان, خود, نگه, دار]       9"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "X_stemmed = PeotStemmer().fit_transform(X_lemmatized)\n",
+    "X_stemmed.head(1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Existance Matrix"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This class creates existance matrix. This matrix made by sentence tokens. At first we tokenize every word and then "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class CreateExistenceMatrix(BaseEstimator, TransformerMixin):\n",
+    "    def __init__(self, msg_attr='text', len_index=1):\n",
+    "        self.word_set = set({})\n",
+    "        self.msg_attr = msg_attr\n",
+    "        self.len_index = len_index\n",
+    "    def fit(self, X, y=None):\n",
+    "        for m in X[self.msg_attr]: \n",
+    "            for w in m:\n",
+    "                self.word_set.add(w)\n",
+    "        return self\n",
+    "    def transform(self, X, y=None):\n",
+    "        dataset = X.copy()\n",
+    "        for word in self.word_set:\n",
+    "            dataset[word] = 0\n",
+    "        indices = dataset.columns[self.len_index:]\n",
+    "        for index, row in dataset.iterrows():\n",
+    "            tokens = row[self.msg_attr]\n",
+    "            for word in tokens:\n",
+    "                if word in dataset.columns:\n",
+    "                    dataset.at[index, word] = dataset.at[index, word] + 1\n",
+    "        dataset.drop(['text'], axis=1, inplace=True)\n",
+    "        return dataset\n",
+    "    def fit_transform(self, X, y=None):\n",
+    "        return self.fit(X, y).transform(X, y)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Lets clean our RAM!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "7"
+      ]
+     },
+     "execution_count": 24,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import gc\n",
+    "del X_normalized\n",
+    "del X_tokenized\n",
+    "del X_lemmatized\n",
+    "del X_with_length\n",
+    "gc.collect()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Creating Pipeline\n",
+    "With creating pipeline we collect all of feature eng models into one single pipeline and we can run them on train_set and test_set."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.pipeline import Pipeline\n",
+    "full_pipeline = Pipeline([\n",
+    "#     ('normalize', PeotNormalizer()),\n",
+    "    ('tokenize', PeotTokenizer()),\n",
+    "#     ('pos', PoetPosAdder()),\n",
+    "#     ('smalize', PoetSmallTokensDeleter()),\n",
+    "    ('length_adder', PeotLengthAdder()),\n",
+    "#     ('lemmitize', PeotLemmatizer()),\n",
+    "#     ('stem', PeotStemmer()),\n",
+    "    ('create_matrix', CreateExistenceMatrix()),\n",
+    "])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X_train_pipeline = full_pipeline.fit_transform(X_train)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X_test_pipeline = full_pipeline.transform(X_test)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Train Naive Bayes Model And How It Works\n",
+    "We use Navie Bayes for this model which follow below rule of thumb.\n",
+    "$$\n",
+    "P(c|X) = \\frac{P(c)\\times\\prod_{i=1}^{f} P(x_i|c)}{P(X)}\n",
+    "$$\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "First we compute $P(x_i|c)$ for every word. We train this model in this order :\n",
+    "1. First we find number of hafez words and saadi words. With that we will find proiority of being hafez or saadi. \n",
+    "2. Then we find probabilty of existance of every words in features set. we compute this priority by computing $\\frac{\\text{Number of Feature Word in Hafez Hemistichs}}{\\text{Number of All Words in Hafez Hemistichs}}$ (same for Saadi). Acutally it is $P(c=\\text{Hafez} | \\text{Saadi})$\n",
+    "3. Next we find probability of other features like length of hemistich. For that we find $P(x=Feature|c)$ by computing $\\frac{\\text{Number of That Feature in Hafez Hemistichs}}{\\text{Number of Hafez Hemistichs}}$ (same for Saadi). Acutally it is $P(x_i|c=\\text{Hafez} | \\text{Saadi})$\n",
+    "4. For prediction we compute probabilty of every class by multipling all probabilties of every word in hemistichs. \n",
+    "5. We ignore $P(x)$ because it is same for all of probablities. Actualy it is $\\frac{\\text{Number of Word}}{\\text{Number of All Words In All Hemsitisch}}$ in this problem.\n",
+    "6. **Laplase** : For laplase we should multiply an `alpha` in numerator and $alpha \\times \\text{Number of All Words Of Hafez/Saadi}$ in denominator. This laplase change value of zero probabilites into a infinitesimal value. We can say \n",
+    "$$\n",
+    "P(x_i|c=\\text{Hafez} | \\text{Saadi}) = \\frac{\\text{Number of That Feature in Hafez Hemistichs} + \\alpha}{\\text{Number of Hafez words} + \\text{Number of Unique Words} \\times  \\alpha }\n",
+    "$$"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class NavieBayes(BaseEstimator, TransformerMixin):\n",
+    "    def __init__(self, alpha=0.5):\n",
+    "        self.alpha = alpha \n",
+    "    \n",
+    "    def fit(self, X, y=None):\n",
+    "        self.hafez_probs = {}\n",
+    "        self.saadi_probs = {}\n",
+    "        self.non_word_features_saadi_probs = {}\n",
+    "        self.non_word_features_hafez_probs = {}\n",
+    "        \n",
+    "        X_saadi = X[y == 'saadi']\n",
+    "        X_hafez = X[y == 'hafez']\n",
+    "        \n",
+    "        non_words_columns_count = 1\n",
+    "        word_columns = list(X.columns)[non_words_columns_count:]\n",
+    "        self.non_word_columns = list(X.columns)[:non_words_columns_count]\n",
+    "        \n",
+    "        number_of_hafez_words = sum(X_hafez[word_columns].sum())\n",
+    "        number_of_saadi_words = sum(X_saadi[word_columns].sum())\n",
+    "        number_of_unqiue_word_h = sum(X_hafez[word_columns].sum())\n",
+    "        number_of_unqiue_word_s = sum(X_saadi[word_columns].sum())\n",
+    "        \n",
+    "        self.hafez_prior = number_of_hafez_words / (number_of_hafez_words + number_of_saadi_words)\n",
+    "        self.saadi_prior = number_of_saadi_words / (number_of_hafez_words + number_of_saadi_words)\n",
+    "        \n",
+    "        hafez_sums = X_hafez[word_columns].sum()\n",
+    "        saadi_sums = X_saadi[word_columns].sum()\n",
+    "        for c in word_columns:\n",
+    "            self.hafez_probs[c] = ((hafez_sums[c]+self.alpha) / (number_of_hafez_words + number_of_unqiue_word_h*self.alpha))\n",
+    "            self.saadi_probs[c] = ((saadi_sums[c]+self.alpha) / (number_of_saadi_words + number_of_unqiue_word_s*self.alpha))\n",
+    "        \n",
+    "        for c in self.non_word_columns:\n",
+    "            num_of_hafezs_hemistichs = len(X_hafez[X_hafez[c] != 0])\n",
+    "            num_of_saadis_hemistichs = len(X_saadi[X_saadi[c] != 0])\n",
+    "            for i in X_train_pipeline[c].unique():\n",
+    "                self.non_word_features_hafez_probs[(c,i)] = (X_hafez[c] == i).sum() / num_of_hafezs_hemistichs\n",
+    "                self.non_word_features_saadi_probs[(c,i)] = (X_saadi[c] == i).sum() / num_of_saadis_hemistichs\n",
+    "        \n",
+    "        return self\n",
+    "    \n",
+    "    def predict(self, X):\n",
+    "        pred = []\n",
+    "        cols = X.columns\n",
+    "        for index, row in X.iterrows():\n",
+    "            h_prob = self.hafez_prior * 1\n",
+    "            s_prob = self.saadi_prior * 1\n",
+    "            r = row[row != 0]\n",
+    "            for index, value in r.items():\n",
+    "                if index in self.non_word_columns:\n",
+    "                    if not (index, r[index]) in self.non_word_features_hafez_probs : continue\n",
+    "                    h_prob *= self.non_word_features_hafez_probs[(index, r[index])]\n",
+    "                    s_prob *= self.non_word_features_saadi_probs[(index, r[index])]\n",
+    "                else:\n",
+    "                    h_prob *= self.hafez_probs[index]\n",
+    "                    s_prob *= self.saadi_probs[index]\n",
+    "\n",
+    "            if h_prob >= s_prob: pred.append('hafez')\n",
+    "            else: pred.append('saadi')\n",
+    "        return np.array(pred)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "naive_bayes_with_laplase = NavieBayes(alpha=0.5).fit(X_train_pipeline, y_train)\n",
+    "navie_bayes_without_laplase = NavieBayes(alpha=0).fit(X_train_pipeline, y_train)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pred_laplase = naive_bayes_with_laplase.predict(X_test_pipeline)\n",
+    "pred_without_laplase = navie_bayes_without_laplase.predict(X_test_pipeline)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def recall_score(y_true, y_pred, pos_label=\"hafez\"):\n",
+    "    correct_detected = len(y_pred[(y_pred == pos_label) & (y_true == pos_label)])\n",
+    "    all_pos = len(y_true[y_true == pos_label])\n",
+    "    return correct_detected/all_pos\n",
+    "\n",
+    "def precision_score(y_true, y_pred, pos_label=\"hafez\"):\n",
+    "    correct_detected = len(y_pred[(y_pred == pos_label) & (y_true == pos_label)])\n",
+    "    all_detected_pos = len(y_pred[y_pred == pos_label])\n",
+    "    return correct_detected/all_detected_pos\n",
+    "\n",
+    "def accuracy_score(y_true, y_pred):\n",
+    "    correct_detected = len(y_pred[(y_pred == y_true)])\n",
+    "    total = len(y_pred)\n",
+    "    return correct_detected/total\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Scores for `Hafez`"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "recall for hafez without laplase : 0.7073897497020262\n",
+      "recall for hafez with laplase : 0.7306317044100119\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f'recall for hafez without laplase : {recall_score(y_test.values, pred_without_laplase, pos_label=\"hafez\")}\\nrecall for hafez with laplase : {recall_score(y_test.values, pred_laplase, pos_label=\"hafez\")}') "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "precision for hafez without laplase : 0.7090800477897252\n",
+      "precision for hafez with laplase : 0.7521472392638037\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f'precision for hafez without laplase : {precision_score(y_test.values, pred_without_laplase, pos_label=\"hafez\")}\\nprecision for hafez with laplase : {precision_score(y_test.values, pred_laplase, pos_label=\"hafez\")}') "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Scores for `Saadi`"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.8384"
+      ]
+     },
+     "execution_count": 34,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "recall_score(y_test.values, pred_laplase, pos_label=\"saadi\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.8226059654631083"
+      ]
+     },
+     "execution_count": 35,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "precision_score(y_test.values, pred_laplase, pos_label=\"saadi\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Accuracy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "accuracy for hafez without laplase : 0.7659167065581618\n",
+      "accuracy for hafez with laplase : 0.7951172809956917\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f'accuracy for hafez without laplase : {accuracy_score(y_test.values, pred_without_laplase)}\\naccuracy for hafez with laplase : {accuracy_score(y_test.values, pred_laplase)}') "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Evalute Model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X_eval = full_pipeline.fit_transform(train_set[['text']])\n",
+    "y_eval = train_set['label']\n",
+    "X_eval_test = full_pipeline.transform(evaluate_set)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "evalute_navie_model = NavieBayes(alpha=0.5).fit(X_eval, y_eval)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y_pred = evalute_navie_model.predict(X_eval_test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "output = pd.DataFrame(data={'id':X_eval_test.index.values, 'label':y_pred})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "output.to_csv('output.csv', index=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Questions"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "1. **Why we can not just see Precision? Set an example.**\n",
+    "\n",
+    "Precision means $\\frac{True_{positive}}{True_{positivie} + False_{positive}}$ which is number of correct detected in all detected values of a class. So we can calculte how much our model selected correct values. It is alwyars not good. For example, assume we have a model that anticipate a patient have cancer or not and just say one patient have cancer an he have cancer truly. So our precision is 100% but it may we miss all other cancer patients. \n",
+    "\n",
+    "1. **Why we can not just see Accuracy? Set an example.**\n",
+    "\n",
+    "Precision means $\\frac{True_{positive} + True_{negative}}{True_{positivie} + False_{positive} + True_{negative} + False_{negative}}$ which is number of all true detected values on all values we should detect. This means accuracy is precent of true detected. Assume a spam verification system which train dataset have very fewer spam values. for example 95% of mails are ham and 5% of mails are spam. So if we just select all inputs as ham we can get 95% accuracy which is not accaptable.\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.5"
+  },
+  "toc": {
+   "base_numbering": 1,
+   "nav_menu": {},
+   "number_sections": true,
+   "sideBar": false,
+   "skip_h1_title": true,
+   "title_cell": "Table of Contents",
+   "title_sidebar": "Contents",
+   "toc_cell": true,
+   "toc_position": {},
+   "toc_section_display": true,
+   "toc_window_display": false
+  },
+  "varInspector": {
+   "cols": {
+    "lenName": 16,
+    "lenType": 16,
+    "lenVar": 40
+   },
+   "kernels_config": {
+    "python": {
+     "delete_cmd_postfix": "",
+     "delete_cmd_prefix": "del ",
+     "library": "var_list.py",
+     "varRefreshCmd": "print(var_dic_list())"
+    },
+    "r": {
+     "delete_cmd_postfix": ") ",
+     "delete_cmd_prefix": "rm(",
+     "library": "var_list.r",
+     "varRefreshCmd": "cat(var_dic_list()) "
+    }
+   },
+   "types_to_exclude": [
+    "module",
+    "function",
+    "builtin_function_or_method",
+    "instance",
+    "_Feature"
+   ],
+   "window_display": false
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
